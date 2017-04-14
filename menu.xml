@@ -1,13 +1,13 @@
 <menu>
-    <menuitem label='Start here'>
+    <menuitem label='Cadastros'>
         <menu>
-            <menuitem label='Welcome'>
-                <menu>
-                    <menuitem label='Welcome page'>
-                        <icon>app/images/ico_wellcome.png</icon>
-                        <action>WelcomeView</action>
-                    </menuitem>
-                </menu>
+            <menuitem label='Usuários'>
+                    <icon>app/images/ico_wellcome.png</icon>
+                    <action>UsuariosList</action>
+            </menuitem>
+            <menuitem label='Salas'>
+                    <icon>app/images/ico_wellcome.png</icon>
+                    <action>WelcomeView</action>
             </menuitem>
         </menu>
     </menuitem>
