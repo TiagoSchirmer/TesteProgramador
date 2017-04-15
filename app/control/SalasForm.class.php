@@ -1,9 +1,9 @@
 <?php
 /**
- * UsuariosForm Registration
+ * SalasForm Registration
  * @author  <Tiago Fernando Schirmer>
  */
-class UsuariosForm extends TPage
+class SalasForm extends TPage
 {
     protected $form; // form
     
@@ -16,7 +16,7 @@ class UsuariosForm extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new TForm('form_Usuarios');
+        $this->form = new TForm('form_Salas');
         $this->form->class = 'tform'; // CSS class
         $this->form->style = 'width: 500px';
         
@@ -33,29 +33,19 @@ class UsuariosForm extends TPage
 
 
         // create the form fields
-        $codigo_usuario                 = new TEntry('codigo_usuario');
-        $nome_usuario                   = new TEntry('nome_usuario');
-        $login_usuario                  = new TEntry('login_usuario');
-        $senha_usuario                  = new TPassword('senha_usuario');
-
-
+        $codigo_sala                 = new TEntry('codigo_sala');
+        $nome_sala                   = new TEntry('nome_sala');
+        
         // define the sizes
-        $codigo_usuario->setSize(100);
-        $codigo_usuario->setEditable(False);
-        $nome_usuario->setSize(200);
-        $login_usuario->setSize(200);
-        $senha_usuario->setSize(200);
-
-
-
+        $codigo_sala->setSize(100);
+        $codigo_sala->setEditable(False);
+        $nome_sala->setSize(200);
+        
         // add one row for each form field
-        $table->addRowSet( new TLabel('Codigo:'), $codigo_usuario );
-        $table->addRowSet( new TLabel('Nome:'), $nome_usuario );
-        $table->addRowSet( new TLabel('Login:'), $login_usuario );
-        $table->addRowSet( new TLabel('Senha:'), $senha_usuario );
-
-
-        $this->form->setFields(array($codigo_usuario,$nome_usuario,$login_usuario,$senha_usuario));
+        $table->addRowSet( new TLabel('Codigo:'), $codigo_sala );
+        $table->addRowSet( new TLabel('Nome:'), $nome_sala );
+        
+        $this->form->setFields(array($codigo_sala,$nome_sala));
 
 
         // create the form actions
@@ -87,15 +77,15 @@ class UsuariosForm extends TPage
         {
             TTransaction::open('conecta'); // open a transaction
             
-            // get the form data into an active record Usuarios
-            $object = $this->form->getData('Usuarios');
+            // get the form data into an active record Salas
+            $object = $this->form->getData('Salas');
             $this->form->validate(); // form validation
             $object->store(); // stores the object
             $this->form->setData($object); // keep form data
             TTransaction::close(); // close the transaction
             
-            // Load UsuariosList
-            TApplication::gotoPage('UsuariosList');
+            // Load SalassList
+            TApplication::gotoPage('SalasList');
         }
         catch (Exception $e) // in case of exception
         {
@@ -117,7 +107,7 @@ class UsuariosForm extends TPage
             {
                 $key=$param['key'];  // get the parameter $key
                 TTransaction::open('conecta'); // open a transaction
-                $object = new Usuarios($key); // instantiates the Active Record
+                $object = new Salas($key); // instantiates the Active Record
                 $this->form->setData($object); // fill the form
                 TTransaction::close(); // close the transaction
             }
@@ -139,6 +129,9 @@ class UsuariosForm extends TPage
      */
     function onCancel()
     {
-        TApplication::gotoPage('UsuariosList');
+        TApplication::gotoPage('SalasList');
     }
 }
+
+
+?>

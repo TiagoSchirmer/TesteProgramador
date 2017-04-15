@@ -7,7 +7,7 @@
             </menuitem>
             <menuitem label='Salas'>
                     <icon>app/images/ico_wellcome.png</icon>
-                    <action>WelcomeView</action>
+                    <action>SalasList</action>
             </menuitem>
         </menu>
     </menuitem>

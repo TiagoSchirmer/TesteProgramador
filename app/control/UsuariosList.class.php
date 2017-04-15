@@ -29,21 +29,16 @@ class UsuariosList extends TStandardList
         $this->form->class = 'tform'; // CSS class
         $this->form->setFormTitle('Listagem de Usuarios');
         
-
         // create the form fields
         $codigo_usuario                 = new TEntry('codigo_usuario');
         $nome_usuario                   = new TEntry('nome_usuario');
         $login_usuario                  = new TEntry('login_usuario');
-
 
         // add the fields
         $this->form->addQuickField('Codigo', $codigo_usuario,  100);
         $this->form->addQuickField('Nome Usuário', $nome_usuario,  200);
         $this->form->addQuickField('Login', $login_usuario,  200);
 
-
-
-        
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue('Usuarios_filter_data') );
         
@@ -55,13 +50,11 @@ class UsuariosList extends TStandardList
         $this->datagrid = new TQuickGrid;
         $this->datagrid->setHeight(320);
         
-
         // creates the datagrid columns
         $codigo_usuario = $this->datagrid->addQuickColumn('Codigo', 'codigo_usuario', 'right', 100, new TAction(array($this, 'onReload')), array('order', 'codigo_usuario'));
         $nome_usuario = $this->datagrid->addQuickColumn('Nome Usuário', 'nome_usuario', 'left', 200, new TAction(array($this, 'onReload')), array('order', 'nome_usuario'));
         $login_usuario = $this->datagrid->addQuickColumn('Login', 'login_usuario', 'left', 100);
 
-        
         // create the datagrid actions
         $edit_action   = new TDataGridAction(array('UsuariosForm', 'onEdit'));
         $delete_action = new TDataGridAction(array($this, 'onDelete'));
