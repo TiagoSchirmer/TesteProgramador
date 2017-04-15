@@ -5,12 +5,21 @@ $uri = 'http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $template = 'theme1';
 
 new TSession;
+$sTemplate = 'Login.html';
+if (TSession::getValue('Logado'))
+{
+    $sTemplate = 'layout.html';
+
+}
+
+//*********************************************************************
 ob_start();
 $menu = TMenuBar::newFromXML('menu.xml');
 $menu->show();
 $menu_string = ob_get_clean();
 
-$content  = file_get_contents("app/templates/{$template}/layout.html");
+$content  = file_get_contents("app/templates/{$template}/".$sTemplate);
+//$content  = file_get_contents("app/templates/{$template}/layout.html");
 //$content  = TApplicationTranslator::translateTemplate($content);
 $content  = str_replace('{LIBRARIES}', file_get_contents("app/templates/{$template}/libraries.html"), $content);
 $content  = str_replace('{URI}', $uri, $content);
