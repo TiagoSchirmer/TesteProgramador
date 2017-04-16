@@ -127,6 +127,11 @@
     {
         new TMessage('info', 'Efetue Login');
     }
-    
+    static function Sair()
+    {
+        TSession::setValue('Logado',False);
+        TApplication::gotoPage('Login');
+        
+    }
 }
 ?>

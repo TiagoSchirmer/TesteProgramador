@@ -9,6 +9,16 @@
                     <icon>app/images/ico_wellcome.png</icon>
                     <action>SalasList</action>
             </menuitem>
+            
+        </menu>
+    </menuitem>
+    <menuitem label='Reservas'>
+        <menu>
+            <menuitem label='Reservar Sala'>
+                    <icon>app/images/ico_wellcome.png</icon>
+                    <action>ReservasList</action>
+            </menuitem>
+                      
         </menu>
     </menuitem>
 </menu>

@@ -251,7 +251,7 @@ class TCombo extends TField implements AdiantiWidgetInterface
             // make the widget read-only
             //$this->tag-> disabled   = "1"; // the value don't post
             $this->tag->{'onclick'} = "return false;";
-            $this->tag->{'style'}   = 'pointer-events:none';
+            $this->tag->{'style'}   = 'pointer-events:none; width:280px';
             $this->tag->{'class'} = 'tfield_disabled'; // CSS
         }
         // shows the combobox

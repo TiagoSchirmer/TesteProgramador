@@ -11,7 +11,7 @@
     public function __construct()
     {
         parent::__construct();
-        TSession::setValue('Logado',False);
+      //  TSession::setValue('Logado',False);
         var_dump(TSession::getValue('Logado'));
         var_dump(TSession::getValue('nome_usuario'));
         var_dump(TSession::getValue('codigo_usuario'));
