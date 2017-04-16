@@ -1,7 +1,7 @@
 <?php
 /**
  * ReservasList Listing
- * @author  <your name here>
+ * @author  <Tiago Fernando Schirmer>
  */
 class ReservasList extends TPage
 {
@@ -30,14 +30,15 @@ class ReservasList extends TPage
         // add a row for the form title
         $row = $table->addRow();
         $row->class = 'tformtitle'; // CSS class
-        $row->addCell( new TLabel('Reservas') )->colspan = 2;
+        $row->addCell( new TLabel('Listagem das Reservas') )->colspan = 2;
         
 
         // create the form fields
         $codigo_reserva                 = new TEntry('codigo_reserva');
-        $hora_reserva                   = new TEntry('hora_reserva');
-        $dia_reserva                    = new TEntry('dia_reserva');
-        $codigo_usuario                 = new TSeekButton('codigo_usuario');
+        $hora_reserva                   = new TCombo('hora_reserva');
+        $dia_reserva                    = new TDate('dia_reserva');
+        $codigo_usuario                 = new TDBSeekButton('codigo_usuario','conecta','form_search_Reservas','Usuarios','nome_usuario','codigo_usuario','nome_usuario');
+        $nome_usuario                   = new TEntry('nome_usuario');
         $codigo_sala                    = new TDBSeekButton('codigo_sala','conecta','form_search_Reservas','Salas','nome_sala','codigo_sala','nome_sala');
         $nome_sala                      = new TEntry('nome_sala');
 
@@ -45,28 +46,46 @@ class ReservasList extends TPage
         $codigo_reserva->setSize(60);
         $hora_reserva->setSize(260);
         $dia_reserva->setSize(260);
-        $codigo_usuario->setSize(260);
+        $codigo_usuario->setSize(60);
+        $nome_usuario->setSize(200);
         $codigo_sala->setSize(60);
         $nome_sala->setSize(200);
+        $nome_usuario->setEditable(False);
         $nome_sala->setEditable(False);
+        $dia_reserva->setMask('dd/mm/yyyy');
+        
+        $Horarios  = array('07:00 - 08:00' => '07:00 - 08:00',
+                           '08:00 - 09:00' => '08:00 - 09:00',
+                           '09:00 - 10:00' => '09:00 - 10:00',
+                           '10:00 - 11:00' => '10:00 - 11:00',
+                           '11:00 - 12:00' => '11:00 - 12:00',
+                           '12:00 - 13:00' => '12:00 - 13:00',
+                           '13:00 - 14:00' => '13:00 - 14:00',
+                           '14:00 - 15:00' => '14:00 - 15:00',
+                           '15:00 - 16:00' => '15:00 - 16:00',
+                           '16:00 - 17:00' => '16:00 - 17:00',
+                           '17:00 - 18:00' => '17:00 - 18:00',
+                           '18:00 - 19:00' => '18:00 - 19:00',
+                           '19:00 - 20:00' => '19:00 - 20:00');
+        $hora_reserva->addItems($Horarios);
 
         // add one row for each form field
-        $table->addRowSet( new TLabel('Codigo da Reserva:'), $codigo_reserva );
+        $table->addRowSet( new TLabel('Codigo:'), $codigo_reserva );
         $table->addRowSet( new TLabel('Hora:'), $hora_reserva );
         $table->addRowSet( new TLabel('Dia:'), $dia_reserva );
-        $table->addRowSet( new TLabel('Usuario:'), $codigo_usuario );
+        $table->addRowSet( new TLabel('Usuário:'), array($codigo_usuario,$nome_usuario ));
         $table->addRowSet( new TLabel('Sala:'), array($codigo_sala,$nome_sala) );
 
 
-        $this->form->setFields(array($codigo_reserva,$hora_reserva,$dia_reserva,$codigo_usuario,$codigo_sala, $nome_sala ));
+        $this->form->setFields(array($codigo_reserva,$hora_reserva,$dia_reserva,$codigo_usuario,$codigo_sala, $nome_sala, $nome_usuario ));
 
 
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue('Reservas_filter_data') );
         
         // create two action buttons to the form
-        $find_button = TButton::create('find', array($this, 'onSearch'), _t('Find'), 'ico_find.png');
-        $new_button  = TButton::create('new',  array('ReservasForm', 'onEdit'), _t('New'), 'ico_new.png');
+        $find_button = TButton::create('find', array($this, 'onSearch'), 'Filtrar', 'ico_find.png');
+        $new_button  = TButton::create('new',  array('ReservasForm', 'onEdit'),'Nova Reserva', 'ico_new.png');
         
         $this->form->addField($find_button);
         $this->form->addField($new_button);
@@ -89,7 +108,7 @@ class ReservasList extends TPage
         $codigo_reserva   = new TDataGridColumn('codigo_reserva', 'Codigo', 'right', 60);
         $hora_reserva   = new TDataGridColumn('hora_reserva', 'Hora', 'left', 150);
         $dia_reserva   = new TDataGridColumn('dia_reserva', 'Dia', 'left', 200);
-        $codigo_usuario   = new TDataGridColumn('usuarios->nome_usuario', 'Usuario', 'left', 200);
+        $codigo_usuario   = new TDataGridColumn('usuarios->nome_usuario', 'Usuário', 'left', 200);
         $codigo_sala   = new TDataGridColumn('salas->nome_sala', 'Sala', 'left', 200);
 
 
@@ -112,19 +131,13 @@ class ReservasList extends TPage
 
 
         
-        // creates two datagrid actions
-        $action1 = new TDataGridAction(array('ReservasForm', 'onEdit'));
-        $action1->setLabel(_t('Edit'));
-        $action1->setImage('ico_edit.png');
-        $action1->setField('codigo_reserva');
+       
         
         $action2 = new TDataGridAction(array($this, 'onDelete'));
         $action2->setLabel(_t('Delete'));
         $action2->setImage('ico_delete.png');
         $action2->setField('codigo_reserva');
         
-        // add the actions to the datagrid
-        $this->datagrid->addAction($action1);
         $this->datagrid->addAction($action2);
         
         // create the datagrid model
@@ -292,7 +305,7 @@ class ReservasList extends TPage
                 // iterate the collection of active records
                 foreach ($objects as $object)
                 {
-                  //  var_dump($object->salas->nome_sala);
+                  
                     // add the object inside the datagrid
                     $this->datagrid->addItem($object);
                 }
@@ -327,12 +340,35 @@ class ReservasList extends TPage
      */
     function onDelete($param)
     {
-        // define the delete action
-        $action = new TAction(array($this, 'Delete'));
-        $action->setParameters($param); // pass the key parameter ahead
+    
+        try
+        {
+            TTransaction::open('conecta');
+            $Dados = new Reservas($param['key']);
+            if($Dados->codigo_usuario == TSession::getValue('codigo_usuario'))
+            {
+                  // define the delete action
+                  $action = new TAction(array($this, 'Delete'));
+                  $action->setParameters($param); // pass the key parameter ahead
         
-        // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+                  // shows a dialog to the user
+                  new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+            }
+            else
+            {
+                new TMessage('info','Exclusão de Agendamento Somente pelo proprio usuario');
+            }
+            
+            TTransaction::close();
+        
+        }
+        catch (Exception $e)
+        {
+              new TMessage('error', '<b>Error</b> ' . $e->getMessage()); // shows the exception error message
+              TTransaction::rollback(); // undo all pending operations
+        
+        }
+      
     }
     
     /**

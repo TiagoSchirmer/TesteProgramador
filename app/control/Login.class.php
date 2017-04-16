@@ -88,7 +88,7 @@
     public function onLogin()
     {
         $oData = $this->oForm->getData();
-        //var_dump($oData);
+      
         try
         {
             TTransaction::open('conecta');

@@ -1,7 +1,7 @@
 <?php
 /**
  * ReservasForm Registration
- * @author  <your name here>
+ * @author  <Tiago Fernando Schirmer>
  */
 class ReservasForm extends TPage
 {
@@ -57,8 +57,7 @@ class ReservasForm extends TPage
         $codigo_usuario->setEditable(False);
         $codigo_usuario->setValue(TSession::getValue('nome_usuario'));
         $dia_reserva->setMask('dd/mm/yyyy'); 
-    //    var_dump(TSession::getValue('nome_usuario'));
-                
+  
         $exitAction = new TAction(array($this, 'exitAction'));
         $dia_reserva->setExitAction($exitAction);
         
@@ -83,14 +82,14 @@ class ReservasForm extends TPage
 
         // create the form actions
         $save_button = TButton::create('save', array($this, 'onSave'), _t('Save'), 'ico_save.png');
-        $new_button  = TButton::create('new',  array($this, 'onEdit'), _t('New'),  'ico_new.png');
+        $cancel_button  = TButton::create('cancel',  array('ReservasList', 'onReload'), 'Cancelar',  'ico_close.png');
         
         $this->form->addField($save_button);
-        $this->form->addField($new_button);
+        $this->form->addField($cancel_button);
         
         $buttons_box = new THBox;
         $buttons_box->add($save_button);
-        $buttons_box->add($new_button);
+        $buttons_box->add($cancel_button);
         
         // add a row for the form action
         $row = $table->addRow();
@@ -114,14 +113,33 @@ class ReservasForm extends TPage
             $object = $this->form->getData('Reservas');
             $this->form->validate(); // form validation
             $object->codigo_usuario = TSession::getValue('codigo_usuario');
-           // var_dump($object);
-            $object->store(); // stores the object
+        
+            $repositorio = new TRepository('Reservas');
+            $Criteria = new TCriteria;
+            $Criteria->add(new TFilter('codigo_usuario','=',TSession::getValue('codigo_usuario')));
+            $Criteria->add(new TFilter('hora_reserva','=',$object->hora_reserva));
+            $Criteria->add(new TFilter('dia_reserva','=',$object->dia_reserva));
+            $result = $repositorio->load($Criteria);
             
-            $this->form->setData($object); // keep form data
+            if($result)
+            {
+               new TMessage('info', "A " . $result[0]->salas->nome_sala . " já esta reservada para o usuario nesse periodo");
+               $dados = new stdClass();
+               $dados->dia_reserva = '';
+               $dados->hora_reserva = '';
+               $dados->nome_sala = $object->salas->nome_sala;
+               TForm::sendData('form_Reservas',$dados);
+            }
+            else
+            {
+                $object->store(); // stores the object
+                TApplication::gotoPage('ReservasList');
+            }
+            
+         
             TTransaction::close(); // close the transaction
             
-            // shows the success message
-            new TMessage('info', TAdiantiCoreTranslator::translate('Record saved'));
+           
         }
         catch (Exception $e) // in case of exception
         {
@@ -166,11 +184,14 @@ class ReservasForm extends TPage
             
             $Criteria = new TCriteria;
             $Criteria->add(new TFilter('codigo_sala','=',$param['codigo_sala']));
+            $Criteria->add(new TFilter('dia_reserva','=',$param['dia_reserva']));
             $object = new TRepository('Reservas');
-            $dados = $object->load();
+            $dados = $object->load($Criteria);
+            $HorariosMarcados = array();
             foreach($dados as $dado)
             {
-                var_dump($dado->codigo_sala);
+                $HorariosMarcados[$dado->hora_reserva] = $dado->hora_reserva;
+            
             }
             
             if($param["codigo_sala"])
@@ -188,8 +209,10 @@ class ReservasForm extends TPage
                                    '17:00 - 18:00' => '17:00 - 18:00',
                                    '18:00 - 19:00' => '18:00 - 19:00',
                                    '19:00 - 20:00' => '19:00 - 20:00');
-              
-                TCombo::reload('form_Reservas','hora_reserva',$Horarios);
+            
+                $result = array_diff($Horarios, $HorariosMarcados);
+             
+                TCombo::reload('form_Reservas','hora_reserva',$result);
                 
                 
             }

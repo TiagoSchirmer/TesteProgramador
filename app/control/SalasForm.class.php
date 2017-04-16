@@ -28,7 +28,7 @@ class SalasForm extends TPage
         // add a row for the form title
         $row = $table->addRow();
         $row->class = 'tformtitle'; // CSS class
-        $row->addCell( new TLabel('Usuários') )->colspan = 2;
+        $row->addCell( new TLabel('Salas') )->colspan = 2;
         
 
 

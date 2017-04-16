@@ -35,5 +35,16 @@ if (isset($_REQUEST['class']))
     $url = http_build_query($_REQUEST);
     $content = str_replace('//#javascript_placeholder#', "__adianti_load_page('engine.php?{$url}');", $content);
 }
+else
+{
+    if(TSession::getValue('logado'))
+    {
+        $content = str_replace('//#javascript_placeholder#', "__adianti_load_page('engine.php?class=WelcomeView');", $content);
+    }
+    else
+    {
+        $content = str_replace('//#javascript_placeholder#', "__adianti_load_page('engine.php?class=WelcomeView');", $content);
+    }
+}
 echo $content;
 ?>

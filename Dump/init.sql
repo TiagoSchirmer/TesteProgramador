@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 14-Abr-2017 às 22:50
+-- Generation Time: 16-Abr-2017 às 10:44
 -- Versão do servidor: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -34,6 +34,20 @@ CREATE TABLE `reservas` (
   `codigo_sala` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Extraindo dados da tabela `reservas`
+--
+
+INSERT INTO `reservas` (`codigo_reserva`, `hora_reserva`, `dia_reserva`, `codigo_usuario`, `codigo_sala`) VALUES
+(1, '07:00 - 08:00', '16/04/2017', 2, 1),
+(2, '08:00 - 09:00', '16/04/2017', 2, 2),
+(3, '07:00 - 08:00', '17/05/2017', 2, 1),
+(4, '10:00 - 11:00', '16/07/2017', 2, 1),
+(5, '08:00 - 09:00', '16/04/2017', 2, 1),
+(6, '12:00 - 13:00', '16/04/2017', 2, 1),
+(7, '09:00 - 10:00', '16/04/2017', 2, 2),
+(8, '07:00 - 08:00', '16/04/2017', 1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -44,6 +58,22 @@ CREATE TABLE `salas` (
   `codigo_sala` int(11) NOT NULL,
   `nome_sala` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `salas`
+--
+
+INSERT INTO `salas` (`codigo_sala`, `nome_sala`) VALUES
+(1, 'Sala 1'),
+(2, 'Sala 2'),
+(3, 'Sala 3'),
+(4, 'Sala 4'),
+(5, 'Sala 5'),
+(6, 'Sala 6'),
+(7, 'Sala 7'),
+(8, 'Sala 8'),
+(9, 'Sala 9'),
+(10, 'Sala 10');
 
 -- --------------------------------------------------------
 
@@ -63,7 +93,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`codigo_usuario`, `nome_usuario`, `login_usuario`, `senha_usuario`) VALUES
-(1, 'Teste da silva', 'teste', 'teste');
+(1, 'Teste da silva', 'teste', 'teste'),
+(2, 'Usuário', 'user', 'user'),
+(3, 'Gerente', 'ger', 'ger'),
+(4, 'Funcionário 1', 'func', 'func');
 
 --
 -- Indexes for dumped tables
